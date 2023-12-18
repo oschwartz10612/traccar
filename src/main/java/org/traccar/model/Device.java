@@ -71,6 +71,20 @@ public class Device extends GroupedModel implements Disableable, Schedulable {
         this.status = status != null ? status.trim() : null;
     }
 
+    public static final String ACTIVITY_ACTIVE = "active";
+    public static final String ACTIVITY_INACTIVE = "inactive";
+
+    private String activity;
+
+    @QueryIgnore
+    public String getActivity() {
+        return activity != null ? activity : ACTIVITY_INACTIVE;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity != null ? activity.trim() : null;
+    }
+
     private Date lastUpdate;
 
     @QueryIgnore
