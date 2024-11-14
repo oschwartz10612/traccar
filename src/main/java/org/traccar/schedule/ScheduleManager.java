@@ -41,7 +41,7 @@ public class ScheduleManager implements LifecycleObject {
         var tasks = List.of(
                 TaskDeleteTemporary.class,
                 TaskReports.class,
-                TaskDeviceInactivityCheck.class,
+                TaskDeviceActivityCheck.class,
                 TaskWebSocketKeepalive.class,
                 TaskHealthCheck.class);
         tasks.forEach(task -> injector.getInstance(task).schedule(executor));

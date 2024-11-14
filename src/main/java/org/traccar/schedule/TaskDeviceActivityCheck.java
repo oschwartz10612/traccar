@@ -116,7 +116,7 @@ public class TaskDeviceActivityCheck implements ScheduleTask {
 
     private boolean checkDeviceInactive(Device device, Map<Long, Group> groups, long currentTime, long checkPeriod) {
         long deviceInactivityStart = getAttribute(device, groups, ATTRIBUTE_DEVICE_INACTIVITY_START);
-        if (deviceInactivityStart > 0 && device.getActivity().equals(Device.ACTIVITY_ACTIVE)) { // make sure its active if we are going to check if its inactive
+        if (deviceInactivityStart > 0) {
             long timeThreshold = device.getLastUpdate().getTime() + deviceInactivityStart;
             if (currentTime >= timeThreshold) {
 
@@ -129,16 +129,8 @@ public class TaskDeviceActivityCheck implements ScheduleTask {
                     long count = (currentTime - timeThreshold - 1) / deviceInactivityPeriod;
                     timeThreshold += count * deviceInactivityPeriod;
                     return currentTime - checkPeriod < timeThreshold;
-                } else {
-                    String activity = device.getActivity();
-
-                    if (activity.equals(Device.ACTIVITY_INACTIVE)) {
-                        return false;
-                    } else if (activity.equals(Device.ACTIVITY_ACTIVE)) {
-                        return currentTime - checkPeriod < timeThreshold;
-                    } else {
-                        return true;
-                    }
+                } else if (device.getActivity().equals(Device.ACTIVITY_ACTIVE)) {
+                    return currentTime - checkPeriod < timeThreshold;
                 }
 
             }
@@ -148,8 +140,7 @@ public class TaskDeviceActivityCheck implements ScheduleTask {
 
     private boolean checkDeviceActive(Device device, Map<Long, Group> groups, long currentTime, long checkPeriod) {
         long deviceActivityStart = getAttribute(device, groups, ATTRIBUTE_DEVICE_ACTIVITY_START);
-        if (deviceActivityStart > 0 && device.getActivity().equals(Device.ACTIVITY_INACTIVE)) { // make sure its inactive if we are going to check if its active
-
+        if (deviceActivityStart > 0) {
 
             long timeThreshold = device.getLastUpdate().getTime() + deviceActivityStart;
             if (currentTime >= timeThreshold) {
@@ -163,17 +154,9 @@ public class TaskDeviceActivityCheck implements ScheduleTask {
                     long count = (currentTime - timeThreshold - 1) / deviceActivityPeriod;
                     timeThreshold += count * deviceActivityPeriod;
                     return currentTime - checkPeriod > timeThreshold;
-                } else {
-                    String activity = device.getActivity();
-
-                    if (activity.equals(Device.ACTIVITY_INACTIVE)) {
-                        return false;
-                    } else if (activity.equals(Device.ACTIVITY_ACTIVE)) {
-                        return currentTime - checkPeriod > timeThreshold;
-                    } else {
-                        return true;
-                    }
-                }
+                } else if (device.getActivity().equals(Device.ACTIVITY_INACTIVE)) {
+                    return currentTime - checkPeriod > timeThreshold;
+                } 
 
             }
         }
